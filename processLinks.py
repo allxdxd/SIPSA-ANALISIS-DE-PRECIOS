@@ -1,5 +1,43 @@
 import pandas as pd
 import re
+import subprocess
+import os
+
+def scrap_links(path: str) -> dict:
+    if not os.path.isdir(path):
+        return {
+            "Éxito": False,
+            "Salida": "",
+            "Error": f"La ruta '{path}' no existe."
+        }
+
+    command = ["npm.cmd", "run", "gl"]  # usar npm.cmd en Windows
+
+    try:
+        response = subprocess.run(
+            command,
+            cwd=path,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+        return {
+            "Éxito": True,
+            "Salida": response.stdout,
+            "Error": response.stderr
+        }
+    except subprocess.CalledProcessError as e:
+        return {
+            "Éxito": False,
+            "Salida": e.stdout,
+            "Error": e.stderr
+        }
+    except FileNotFoundError as e:
+        return {
+            "Éxito": False,
+            "Salida": "",
+            "Error": f"Comando no encontrado: {e}"
+        }
 
 def extract_tranform_links(path: str) -> pd.DataFrame:
 

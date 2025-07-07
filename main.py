@@ -1,6 +1,9 @@
 import pandas as pd
-from processLinks import fileProcessor, extract_tranform_links
+from processLinks import fileProcessor, extract_tranform_links, scrap_links
 import datetime
+
+# Buscar los link de los archivos y traerlos
+scrap_links("./agronet_scraper")
 
 path = "./agronet_scraper/dataLinks.json"
 
