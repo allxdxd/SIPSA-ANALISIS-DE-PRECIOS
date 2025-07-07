@@ -2,6 +2,7 @@ import pandas as pd
 import re
 import subprocess
 import os
+import datetime
 
 def scrap_links(path: str) -> dict:
     if not os.path.isdir(path):
@@ -128,3 +129,19 @@ def fileProcessor(path: str, date_start: str, date_end: str) -> pd.DataFrame:
     data = data.dropna()
     return data
 
+def exportName():
+    now = datetime.datetime.now()
+    return f"export-{now.day}-{now.month}-{now.year}-{now.hour}-{now.minute}-{now.second}.xlsx"
+
+# Crear funcion que envíe el archivo a la base de datos
+def export_to_db(df: pd.DataFrame, table_name: str):
+    from sqlalchemy import create_engine
+
+    # Crear conexión a la base de datos
+    pgpass = os.getenv('PGADMINPASSWORD')
+    engine = create_engine(f'postgresql://user:{pgpass}@localhost:5432/sipsa')
+
+    # Exportar DataFrame a la base de datos
+    df.to_sql(table_name, engine, if_exists='replace', index=False)
+
+    print(f"Datos exportados a la tabla {table_name} en la base de datos.")

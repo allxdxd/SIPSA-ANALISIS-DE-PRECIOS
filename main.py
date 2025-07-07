@@ -1,6 +1,6 @@
 import pandas as pd
-from processLinks import fileProcessor, extract_tranform_links, scrap_links
-import datetime
+import os
+from processLinks import fileProcessor, extract_tranform_links, scrap_links, exportName
 
 # Buscar los link de los archivos y traerlos
 scrap_links("./agronet_scraper")
@@ -21,13 +21,8 @@ for link in links.iterrows():
 
 df_final = pd.concat(df_array)  
 
-def exportName():
-    now = datetime.datetime.now()
-    return f"export-{now.day}-{now.month}-{now.year}-{now.hour}-{now.minute}-{now.second}.xlsx"
 
 export_file = f'./Exports/{exportName()}'
 df_final.to_excel(export_file)
 
 print(df_final)
-
-

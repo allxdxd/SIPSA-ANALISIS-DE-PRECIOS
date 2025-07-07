@@ -1,6 +1,6 @@
 import { chromium } from "playwright";
 import pc from "picocolors";
-import { writeFile } from "fs/promises";
+import { writeFile, readFile } from "fs/promises";
 
 console.log(pc.green("Iniciando el script..."));
 console.log(pc.yellow("Cargando el navegador..."));
@@ -61,8 +61,21 @@ dataLinks.forEach((link) => {
 });
 
 try {
-  await writeFile("dataLinks.json", JSON.stringify(dataLinks, null, 2), "utf-8");
-  console.log(pc.green("Enlaces guardados en dataLinks.json"));
+  // Leer enlaces existentes si el archivo existe
+  let existingLinks = [];
+  try {
+    const fileContent = await readFile("dataLinks.json", "utf-8");
+    existingLinks = JSON.parse(fileContent);
+  } catch (err) {
+    // Si el archivo no existe, continuar con array vacío
+    if (err.code !== "ENOENT") throw err;
+  }
+
+  // Juntar y eliminar duplicados usando el tipo de datos set
+  const allLinks = Array.from(new Set([...existingLinks, ...dataLinks]));
+
+  await writeFile("dataLinks.json", JSON.stringify(allLinks, null, 2), "utf-8");
+  console.log(pc.green("Enlaces añadidos a dataLinks.json"));
 } catch (err) {
   console.log(pc.red("Error al guardar el archivo JSON:"), err);
 }
