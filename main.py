@@ -22,6 +22,6 @@ for link in links.iterrows():
 df_final = pd.concat(df_array)  
 
 export_file = f'./Exports/{exportName()}'
-df_final.to_excel(export_file)
+df_final.to_excel(export_file, index=False)
 
 print(df_final)
